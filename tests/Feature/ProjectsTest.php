@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
+use App\Models\User;
 use App\Models\Project;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -11,9 +12,19 @@ class ProjectsTest extends TestCase
 {
     use WithFaker, RefreshDatabase;
 
+    public function test_only_authenticated_users_can_create_projects()
+    {
+        $attributes = Project::factory()->raw(); //->make(['owner_id' => null])->toArray();
+
+        $this->post('/projects', $attributes)->assertRedirect('login');
+    }
+
+
     public function test_a_user_can_create_a_project()
     {
         $this->withoutExceptionHandling();
+
+        $this->actingAs(User::factory()->create());
 
         $attributes = [
             'title' => $this->faker()->sentence(),
@@ -53,15 +64,20 @@ class ProjectsTest extends TestCase
 
     public function test_a_project_needs_a_title()
     {
+        $user = User::factory()->create();
+
+        $this->actingAs($user);
+
         $attributes = Project::factory()->make(['title' => ''])->toArray();
 
         $this->post('/projects', $attributes)->assertSessionHasErrors('title');
     }
 
 
-
     public function test_a_project_needs_a_description()
     {
+        $this->actingAs(User::factory()->create());
+
         $attributes = Project::factory()->make(['description' => ''])->toArray();
 
         $this->post('/projects', $attributes)->assertSessionHasErrors('description');
@@ -69,12 +85,9 @@ class ProjectsTest extends TestCase
 
     public function test_project_has_a_path()
     {
-        $attributes = [
-            'title' => $this->faker()->sentence(),
-            'description' => $this->faker()->paragraph(2)
-        ];
+        $this->actingAs(User::factory()->create());
 
-        $project = Project::create($attributes);
+        $project = Project::factory()->make();
 
         $this->assertEquals('/projects/' . $project->id , $project->path());
     }
