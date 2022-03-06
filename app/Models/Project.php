@@ -11,8 +11,19 @@ class Project extends Model
 
     protected $guarded = [];
 
+    /**
+     * Return the path to a instance of Project
+     * @param int $id  Project ID
+     * @return string path
+     */
     public function path($id = null) : string
     {
         return "/projects/" . ($id ?? $this->id);
+    }
+
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'owner_id');
     }
 }

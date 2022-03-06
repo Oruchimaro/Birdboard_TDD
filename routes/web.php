@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProjectsController;
 
 /*
@@ -20,10 +21,15 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::group(['middleware' => 'auth'], function(){
 
-Route::controller(ProjectsController::class)->group(function(){
-    Route::get('projects', 'index');
-    Route::get('projects/{project}', 'show');
-    Route::post('projects', 'store')->middleware('auth');
+    Route::controller(ProjectsController::class)->group(function(){
+        Route::get('/projects', 'index')->name('projects.index');
+        Route::get('/projects/create', 'create')->name('projects.create');
+        Route::get('/projects/{project}', 'show')->name('projects.show');
+        Route::post('/projects', 'store')->name('projects.store');
+    });
+
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
 });
+

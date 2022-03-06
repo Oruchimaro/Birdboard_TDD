@@ -5,18 +5,22 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Project;
+use Illuminate\Http\Response;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class ProjectsTest extends TestCase
+class ManageProjectsTest extends TestCase
 {
     use WithFaker, RefreshDatabase;
 
-    public function test_only_authenticated_users_can_create_projects()
+    public function test_guests_cannot_manage_projects()
     {
-        $attributes = Project::factory()->raw(); //->make(['owner_id' => null])->toArray();
+        $project = Project::factory()->create();
 
-        $this->post('/projects', $attributes)->assertRedirect('login');
+        $this->get('/projects')->assertRedirect('login');
+        $this->get('/projects/create')->assertRedirect('login');
+        $this->post('/projects', $project->toArray())->assertRedirect('login');
+        $this->get($project->path())->assertRedirect('login');
     }
 
 
@@ -25,6 +29,8 @@ class ProjectsTest extends TestCase
         $this->withoutExceptionHandling();
 
         $this->actingAs(User::factory()->create());
+
+        $this->get('/projects/create')->assertStatus(Response::HTTP_OK);
 
         $attributes = [
             'title' => $this->faker()->sentence(),
@@ -40,11 +46,14 @@ class ProjectsTest extends TestCase
         $this->get('/projects')->assertSee($attributes['description']);
     }
 
-    public function test_a_user_can_view_a_project()
+
+    public function test_a_user_can_view_their_project()
     {
+        $this->be(User::factory()->create());
+
         $this->withoutExceptionHandling();
 
-        $project = Project::factory()->create();
+        $project = Project::factory()->create([ 'owner_id' => auth()->id() ]);
 
         $this->get($project->path())
             ->assertSee($project->title)
@@ -52,13 +61,16 @@ class ProjectsTest extends TestCase
     }
 
 
-    public function test_user_can_only_see_existing_projects()
+    public function test_an_authenticated_user_cannot_view_the_projects_of_others()
     {
+        $this->be(User::factory()->create());
+
+        // $this->withoutExceptionHandling();
+
         $project = Project::factory()->create();
 
-        $this->assertDatabaseCount('projects', 1);
-
-        $this->get($project->path(2))->assertStatus(404);
+        $this->get($project->path())
+            ->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
 
@@ -83,12 +95,18 @@ class ProjectsTest extends TestCase
         $this->post('/projects', $attributes)->assertSessionHasErrors('description');
     }
 
+    /** Model Tests */
     public function test_project_has_a_path()
     {
-        $this->actingAs(User::factory()->create());
-
         $project = Project::factory()->make();
 
         $this->assertEquals('/projects/' . $project->id , $project->path());
+    }
+
+    public function test_project_belongs_to_an_owner()
+    {
+        $project = Project::factory()->make();
+
+        $this->assertInstanceOf('App\Models\User', $project->owner);
     }
 }

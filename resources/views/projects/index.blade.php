@@ -15,6 +15,7 @@
         <br>
         {{ $project->description }}
     </span>
+    <br><hr>
     @empty
         <h2>No projects yet</h2>
     @endforelse
