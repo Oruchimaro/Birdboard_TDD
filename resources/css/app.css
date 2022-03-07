@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.button {
+    @apply bg-mycolors-200 text-white no-underline rounded-lg text-sm py-2 px-5;
+    box-shadow: -1px 6px 5px 0px rgba(145, 205, 226, 0.63);
+}

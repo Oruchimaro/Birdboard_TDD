@@ -14,7 +14,8 @@
                         </div>
                     @endif
 
-                    {{ __('You are logged in!') }}
+                    <h1 class="text-3xl font-bold underline"> {{ __('You are logged in!') }} </h1>
+
                 </div>
             </div>
         </div>
