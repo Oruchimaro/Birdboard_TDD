@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProjectsController;
+use App\Http\Controllers\ProjectTasksController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +30,11 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('/projects/{project}', 'show')->name('projects.show');
         Route::post('/projects', 'store')->name('projects.store');
     });
+
+    Route::controller(ProjectTasksController::class)->group(function(){
+        Route::post('/projects/{project}/tasks', 'store')->name('task.store');
+    });
+
 
     Route::get('/home', [HomeController::class, 'index'])->name('home');
 });

@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use App\Models\User;
 use App\Models\Project;
 use Illuminate\Http\Response;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -28,13 +27,13 @@ class ManageProjectsTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $this->actingAs(User::factory()->create());
+        $this->signIn();
 
         $this->get('/projects/create')->assertStatus(Response::HTTP_OK);
 
         $attributes = [
-            'title' => $this->faker()->sentence(),
-            'description' => $this->faker()->paragraph(2)
+            'title' => $this->faker()->sentence(4),
+            'description' => $this->faker()->sentence(4)
         ];
 
         $this->post('/projects', $attributes)->assertRedirect('/projects');
@@ -49,7 +48,7 @@ class ManageProjectsTest extends TestCase
 
     public function test_a_user_can_view_their_project()
     {
-        $this->be(User::factory()->create());
+        $this->signIn();
 
         $this->withoutExceptionHandling();
 
@@ -63,9 +62,7 @@ class ManageProjectsTest extends TestCase
 
     public function test_an_authenticated_user_cannot_view_the_projects_of_others()
     {
-        $this->be(User::factory()->create());
-
-        // $this->withoutExceptionHandling();
+        $this->signIn();
 
         $project = Project::factory()->create();
 
@@ -76,9 +73,7 @@ class ManageProjectsTest extends TestCase
 
     public function test_a_project_needs_a_title()
     {
-        $user = User::factory()->create();
-
-        $this->actingAs($user);
+        $this->signIn();
 
         $attributes = Project::factory()->make(['title' => ''])->toArray();
 
@@ -88,7 +83,7 @@ class ManageProjectsTest extends TestCase
 
     public function test_a_project_needs_a_description()
     {
-        $this->actingAs(User::factory()->create());
+        $this->signIn();
 
         $attributes = Project::factory()->make(['description' => ''])->toArray();
 
@@ -108,5 +103,16 @@ class ManageProjectsTest extends TestCase
         $project = Project::factory()->make();
 
         $this->assertInstanceOf('App\Models\User', $project->owner);
+    }
+
+    public function test_project_can_add_tasks()
+    {
+        $project = Project::factory()->create();
+
+        $task = $project->addTask('Test Task');
+
+        $this->assertCount(1, $project->tasks);
+
+        $this->assertTrue($project->tasks->contains($task));
     }
 }
