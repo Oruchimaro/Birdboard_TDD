@@ -12,6 +12,8 @@ class Task extends Model
 
     protected $guarded = [];
 
+	protected $touches = ['project']; // on update, update these relationships as well (updated at)
+
 	public function project()
 	{
 		return $this->belongsTo(Project::class);
