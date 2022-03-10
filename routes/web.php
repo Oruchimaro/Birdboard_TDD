@@ -33,6 +33,7 @@ Route::group(['middleware' => 'auth'], function(){
 
     Route::controller(ProjectTasksController::class)->group(function(){
         Route::post('/projects/{project}/tasks', 'store')->name('task.store');
+        Route::patch('/projects/{project}/tasks/{task}', 'update')->name('task.update');
     });
 
 
