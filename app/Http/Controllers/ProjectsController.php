@@ -17,10 +17,7 @@ class ProjectsController extends Controller
 
     public function show(Project $project)
     {
-        if (auth()->user()->isNot($project->owner))  //Eloquent models provide *is* & *isNot* methods, checks to see 2 models are equal or not equal
-        {
-            abort(403);
-        }
+		$this->authorize('update', $project);
 
         return view('projects.show', compact('project'));
     }
@@ -38,10 +35,23 @@ class ProjectsController extends Controller
         $attributes = $request->validate([
             'title' => 'required',
             'description' => 'required',
+			'notes' => 'min:3'
         ]);
 
         $project = auth()->user()->projects()->create($attributes);
 
         return redirect($project->path());
     }
+
+
+	public function update(Project $project)
+	{
+		$this->authorize('update', $project);
+
+		$project->update([
+			'notes' => request('notes')
+		]);
+
+		return redirect($project->path());
+	}
 }

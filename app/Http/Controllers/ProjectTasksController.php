@@ -4,17 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use App\Models\Project;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 
 class ProjectTasksController extends Controller
 {
     public function store(Project $project) : RedirectResponse
     {
-        if (auth()->user()->isNot($project->owner))
-        {
-            abort(403);
-        }
+		$this->authorize('update', $project);
 
         request()->validate(['body' => 'required']);
 
@@ -24,14 +20,11 @@ class ProjectTasksController extends Controller
     }
 
 
-    public function update(Project $project, Task $task) : RedirectResponse
-    {
-		if (auth()->user()->isNot($project->owner))
-        {
-            abort(403);
-        }
+	public function update(Project $project, Task $task) : RedirectResponse
+	{
+		$this->authorize('update', $task->project);
 
-        request()->validate(['body' => 'required']);
+		request()->validate(['body' => 'required']);
 
 		$task->update([
 			'body' => request('body'),
@@ -39,7 +32,5 @@ class ProjectTasksController extends Controller
 		]);
 
 		return redirect($project->path());
-    }
-
-
+	}
 }
