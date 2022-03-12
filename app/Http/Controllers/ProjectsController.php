@@ -29,16 +29,16 @@ class ProjectsController extends Controller
     }
 
 
+	public function edit(Project $project)
+	{
+		return view('projects.edit', compact('project'));
+	}
 
-    public function store(Request $request)
+
+
+    public function store()
     {
-        $attributes = $request->validate([
-            'title' => 'required',
-            'description' => 'required',
-			'notes' => 'min:3'
-        ]);
-
-        $project = auth()->user()->projects()->create($attributes);
+        $project = auth()->user()->projects()->create($this->validateReq());
 
         return redirect($project->path());
     }
@@ -48,10 +48,19 @@ class ProjectsController extends Controller
 	{
 		$this->authorize('update', $project);
 
-		$project->update([
-			'notes' => request('notes')
-		]);
+		$project->update($this->validateReq());
 
 		return redirect($project->path());
 	}
+
+	protected function validateReq()
+	{
+		return request()->validate([
+			'title' => 'required',
+            'description' => 'required',
+			'notes' => 'min:3'
+		]);
+	}
+
+
 }
