@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
-use Illuminate\Http\Request;
+use App\Http\Requests\UpdateProjectRequest;
 
 class ProjectsController extends Controller
 {
@@ -38,27 +38,21 @@ class ProjectsController extends Controller
 
     public function store()
     {
-        $project = auth()->user()->projects()->create($this->validateReq());
+        $project = auth()->user()->projects()->create(request()->validate([
+			'title' => 'sometimes|required',
+            'description' => 'sometimes|required',
+			'notes' => 'nullable'
+		]));
 
         return redirect($project->path());
     }
 
 
-	public function update(Project $project)
+	public function update(UpdateProjectRequest $request, Project $project)
 	{
-		$this->authorize('update', $project);
-
-		$project->update($this->validateReq());
+		$project->update($request->validated());
 
 		return redirect($project->path());
 	}
 
-	protected function validateReq()
-	{
-		return request()->validate([
-			'title' => 'sometimes|required',
-            'description' => 'sometimes|required',
-			'notes' => 'nullable'
-		]);
-	}
 }
