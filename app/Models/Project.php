@@ -50,11 +50,8 @@ class Project extends Model
 	 * @param string $activity
 	 * @return void
 	 */
-	public function recordActivity($type) : void
+	public function recordActivity($description) : void
 	{
-		Activity::create([
-			'project_id' => $this->id,
-			'description' => $type
-		]);
+		$this->activity()->create(compact('description'));
 	}
 }

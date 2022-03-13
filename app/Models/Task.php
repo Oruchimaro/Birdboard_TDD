@@ -41,4 +41,10 @@ class Task extends Model
 		$this->update(['completed' => true]);
 		$this->project->recordActivity('completed_task'); // move the activity feed update to this method instead of boot
 	}
+
+	public function incomplete() : void
+	{
+		$this->update(['completed' => false]);
+		// $this->project->recordActivity('completed_task'); // move the activity feed update to this method instead of boot
+	}
 }
