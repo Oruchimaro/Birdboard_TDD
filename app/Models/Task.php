@@ -16,15 +16,6 @@ class Task extends Model
 
 	protected $touches = ['project']; // on update, update these relationships as well (updated at)
 
-	protected static function boot()
-	{
-		parent::boot();
-
-		static::created(function($task){
-			$task->project->recordActivity('created_task');
-		});
-	}
-
 	public function project()
 	{
 		return $this->belongsTo(Project::class);
@@ -45,6 +36,6 @@ class Task extends Model
 	public function incomplete() : void
 	{
 		$this->update(['completed' => false]);
-		// $this->project->recordActivity('completed_task'); // move the activity feed update to this method instead of boot
+		$this->project->recordActivity('incompleted_task'); // move the activity feed update to this method instead of boot
 	}
 }
