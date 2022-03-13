@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Task;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Project extends Model
 {
@@ -38,12 +39,22 @@ class Project extends Model
 	}
 
 
-
-
-    public function addTask($body)
+    public function addTask($body) : Task
     {
         return $this->tasks()->create(compact('body'));
     }
 
-
+	/**
+	 * Insert a new row for each activity to the table activities
+	 *
+	 * @param string $activity
+	 * @return void
+	 */
+	public function recordActivity($type) : void
+	{
+		Activity::create([
+			'project_id' => $this->id,
+			'description' => $type
+		]);
+	}
 }
