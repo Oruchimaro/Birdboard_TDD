@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Task;
 use Tests\TestCase;
 use Facades\Tests\Setup\ProjectFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -16,7 +17,12 @@ class TriggerActivityTest extends TestCase
 
 		$this->assertCount(1, $project->activity);
 
-		$this->assertEquals('created', $project->activity[0]->description);
+		tap($project->activity->last(), function ($activity){
+
+			$this->assertEquals('created', $activity->description);
+
+			$this->assertNull($activity->changes);
+		});
 	}
 
 
@@ -24,11 +30,22 @@ class TriggerActivityTest extends TestCase
 	{
 		$project = ProjectFactory::create();
 
+		$original_title = $project->title;
+
 		$project->update(['title' => 'Changed']);
 
 		$this->assertCount(2, $project->activity);
 
-		$this->assertEquals('updated', $project->activity[1]->description);
+		tap($project->activity->last(), function ($activity) use ($original_title){
+			$this->assertEquals('updated', $activity->description);
+
+			$expected = [
+				'before' =>['title' =>$original_title],
+				'after' => ['title' => 'Changed']
+			];
+
+			$this->assertEquals($expected, $activity->changes);
+		});
 	}
 
 
@@ -39,7 +56,14 @@ class TriggerActivityTest extends TestCase
 		$project->addTask('Some Task');
 
 		$this->assertCount(2, $project->activity);
-		$this->assertEquals('created_task', $project->activity[1]->description);
+
+		tap( $project->activity->last(), function($activity){
+			$this->assertEquals('created_task', $activity->description);
+
+			$this->assertInstanceOf(Task::class, $activity->subject);
+
+			$this->assertEquals('Some Task', $activity->subject->body);
+		} );
 	}
 
 
@@ -53,7 +77,12 @@ class TriggerActivityTest extends TestCase
 		]);
 
 		$this->assertCount(3, $project->activity);
-		$this->assertEquals('completed_task', $project->activity[2]->description);
+
+		tap( $project->activity->last(), function($activity){
+			$this->assertEquals('completed_task', $activity->description);
+
+			$this->assertInstanceOf(Task::class, $activity->subject);
+		} );
 	}
 
 	public function test_incompleting_a_task()

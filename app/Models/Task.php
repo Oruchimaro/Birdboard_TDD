@@ -30,12 +30,31 @@ class Task extends Model
 	public function complete() : void
 	{
 		$this->update(['completed' => true]);
-		$this->project->recordActivity('completed_task'); // move the activity feed update to this method instead of boot
+		$this->recordActivity('completed_task'); // move the activity feed update to this method instead of boot
 	}
 
 	public function incomplete() : void
 	{
 		$this->update(['completed' => false]);
-		$this->project->recordActivity('incompleted_task'); // move the activity feed update to this method instead of boot
+		$this->recordActivity('incompleted_task'); // move the activity feed update to this method instead of boot
+	}
+
+		/**
+	 * Insert a new row for each activity to the table activities
+	 *
+	 * @param string $activity
+	 * @return void
+	 */
+	public function recordActivity($description) : void
+	{
+		$this->activity()->create([
+			'description' => $description,
+			'project_id' => $this->project_id
+		]);
+	}
+
+	public function activity()
+	{
+		return $this->morphMany(Activity::class, 'subject')->latest();
 	}
 }
