@@ -3,17 +3,15 @@
 namespace App\Models;
 
 use App\Models\Task;
+use App\RecordsActivity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Arr;
 
 class Project extends Model
 {
-    use HasFactory;
+    use HasFactory, RecordsActivity ;
 
     protected $guarded = [];
-
-	public $old = [];
 
     /**
      * Return the path to a instance of Project
@@ -36,11 +34,6 @@ class Project extends Model
         return $this->hasMany(Task::class);
     }
 
-	public function activity()
-	{
-		return $this->hasMany(Activity::class)->latest();
-	}
-
 
     public function addTask($body) : Task
     {
@@ -48,27 +41,12 @@ class Project extends Model
     }
 
 	/**
-	 * Insert a new row for each activity to the table activities
+	 * Create a relationship with activity for this model
 	 *
-	 * @param string $activity
-	 * @return void
+	 * @return \Illuminate\Database\Eloquent\Relations\MorphMany
 	 */
-	public function recordActivity($description) : void
+	public function activity()
 	{
-		$this->activity()->create([
-			'description' => $description,
-			'changes' => $this->activityChanges($description)
-		]);
-	}
-
-	protected function activityChanges($description)
-	{
-		if ($description == 'updated')
-		{
-			return [
-				'before' => Arr::except( array_diff($this->old, $this->getAttributes()) , 'updated_at'),
-				'after' => Arr::except( $this->getChanges(), 'updated_at')
-			];
-		}
+		return $this->hasMany(Activity::class)->latest();
 	}
 }
