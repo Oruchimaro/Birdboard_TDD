@@ -1,1 +1,1 @@
-You Marked "{{$activity->subject->body}}" as incompleted
+{{ $activity->user->name }} Marked "{{$activity->subject->body}}" as incompleted
