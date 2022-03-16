@@ -8,7 +8,15 @@
 
 .button {
     @apply bg-mycolors-200 text-white no-underline rounded-lg text-sm py-2 px-5;
-    box-shadow: -1px 6px 5px 0px rgba(145, 205, 226, 0.63);
+    box-shadow: -1px 3px 2px 0px rgba(145, 205, 226, 0.63);
+}
+
+.delete {
+	@apply bg-red-600 font-bold
+}
+
+.submit {
+	@apply bg-green-300 font-bold
 }
 
 .card {

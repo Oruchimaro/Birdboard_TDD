@@ -22,6 +22,7 @@ class ManageProjectsTest extends TestCase
         $this->get( $project->path() . '/edit')->assertRedirect('login');
         $this->get($project->path())->assertRedirect('login');
         $this->post('/projects', $project->toArray())->assertRedirect('login');
+        $this->delete($project->path())->assertRedirect('login');
     }
 
 
@@ -65,6 +66,21 @@ class ManageProjectsTest extends TestCase
         $this->assertDatabaseHas('projects', $attributes);
     }
 
+	public function test_a_user_can_delete_a_project()
+	{
+		$project = ProjectFactory::create();
+
+		$this->actingAs($project->owner)
+			->delete($project->path())
+			->assertRedirect('/projects');
+
+		$this->assertDatabaseMissing('projects', $project->only('id'));
+
+		// Or can be checked like this
+
+		$this->assertNull( $project->fresh() );
+	}
+
 
 	public function test_a_user_can_update_a_projects_general_notes()
     {
@@ -107,6 +123,16 @@ class ManageProjectsTest extends TestCase
         $project = Project::factory()->create();
 
         $this->patch($project->path())
+            ->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+	public function test_an_authenticated_user_cannot_delete_the_projects_of_others()
+    {
+        $this->signIn();
+
+        $project = Project::factory()->create();
+
+        $this->delete($project->path())
             ->assertStatus(Response::HTTP_FORBIDDEN);
     }
 

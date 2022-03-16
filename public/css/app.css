@@ -516,6 +516,9 @@ Ensure the default browser behavior of the `hidden` attribute.
 .-ml-5 {
   margin-left: -1.25rem;
 }
+.mt-3 {
+  margin-top: 0.75rem;
+}
 .mb-10 {
   margin-bottom: 2.5rem;
 }
@@ -527,9 +530,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 }
 .mb-8 {
   margin-bottom: 2rem;
-}
-.mt-3 {
-  margin-top: 0.75rem;
 }
 .block {
   display: block;
@@ -677,6 +677,9 @@ Ensure the default browser behavior of the `hidden` attribute.
 .text-center {
   text-align: center;
 }
+.text-right {
+  text-align: right;
+}
 .align-baseline {
   vertical-align: baseline;
 }
@@ -751,6 +754,10 @@ Ensure the default browser behavior of the `hidden` attribute.
   --tw-text-opacity: 1;
   color: rgb(185 28 28 / var(--tw-text-opacity));
 }
+.text-blue-900 {
+  --tw-text-opacity: 1;
+  color: rgb(30 58 138 / var(--tw-text-opacity));
+}
 .underline {
   -webkit-text-decoration-line: underline;
           text-decoration-line: underline;
@@ -788,7 +795,19 @@ Ensure the default browser behavior of the `hidden` attribute.
   color: rgb(255 255 255 / var(--tw-text-opacity));
   -webkit-text-decoration-line: none;
           text-decoration-line: none;
-    box-shadow: -1px 6px 5px 0px rgba(145, 205, 226, 0.63);
+    box-shadow: -1px 3px 2px 0px rgba(145, 205, 226, 0.63);
+}
+
+.delete {
+  --tw-bg-opacity: 1;
+  background-color: rgb(220 38 38 / var(--tw-bg-opacity));
+  font-weight: 700;
+}
+
+.submit {
+  --tw-bg-opacity: 1;
+  background-color: rgb(134 239 172 / var(--tw-bg-opacity));
+  font-weight: 700;
 }
 
 .card {

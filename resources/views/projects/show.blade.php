@@ -58,7 +58,7 @@
 							style="min-height: 200px;">{{ $project->notes }}
 						</textarea>
 
-						<button class="button" type="submit">Save</button>
+						<button class="button submit mt-3 text-xl" type="submit">Save</button>
 					</form>
                 </div>
 

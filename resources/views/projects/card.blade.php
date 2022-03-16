@@ -3,4 +3,13 @@
         <a class="no-underline text-black" href="{{ $project->path() }}"> {{ $project->title }} </a>
     </h3>
     <div class="text-cgrey-200"> {{ \Illuminate\Support\Str::limit($project->description,100) }} </div>
+
+	<footer >
+		<form method="post" class="text-right" action="{{ $project->path() }}">
+			@method('DELETE')
+			@csrf
+
+			<button class="button delete mt-3" type="submit">Delete</button>
+		</form>
+	</footer>
 </div>

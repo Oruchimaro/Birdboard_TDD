@@ -1,5 +1,5 @@
 <div class="card mt-3">
-	<ul class="text-xs text-cyan-300">
+	<ul class="text-xs text-blue-900 ">
 		@foreach ($project->activity as $activity)
 			<li class="{{ $loop->last ? '' : 'mb-2' }}">
 				@include ("projects.activity.{$activity->description}")
