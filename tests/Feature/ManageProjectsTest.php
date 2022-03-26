@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\Project;
+use App\Models\User;
 use Illuminate\Http\Response;
 use Facades\Tests\Setup\ProjectFactory;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -181,4 +182,14 @@ class ManageProjectsTest extends TestCase
 
         $this->assertTrue($project->tasks->contains($task));
     }
+
+
+	public function test_it_can_invite_a_user()
+	{
+		$project = Project::factory()->create();
+
+		$task = $project->invite($user = User::factory()->create());
+
+		$this->assertTrue($project->members->contains($user));
+	}
 }
