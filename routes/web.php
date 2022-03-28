@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\ProjectTasksController;
+use App\Http\Controllers\ProjectsInvitationsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +32,9 @@ Route::group(['middleware' => 'auth'], function(){
         Route::patch('/projects/{project:id}/tasks/{task}', 'update')->name('task.update');
     });
 
+	Route::controller(ProjectsInvitationsController::class)->group(function(){
+        Route::post('/projects/{project}/invitations', 'store')->name('invite.store');
+    });
 
     Route::get('/home', [HomeController::class, 'index'])->name('home');
 });
