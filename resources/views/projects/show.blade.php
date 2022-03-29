@@ -80,16 +80,15 @@
 
 			</div>
 
-
-
-
 			<div class="w-1/4 px-3">
-				@include('projects.card')
+				@include ('projects.card')
 
-				@include('projects.activity.activity_card')
+				@include ('projects.activity.activity_card')
+
+				@can ('manage', $project)
+					@include ('projects.invite')
+				@endcan
 			</div>
-
-
 
 		</div>
 	</main>
