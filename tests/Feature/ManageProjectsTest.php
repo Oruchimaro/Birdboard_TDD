@@ -33,19 +33,8 @@ class ManageProjectsTest extends TestCase
 
 		$this->get('/projects/create')->assertStatus(Response::HTTP_OK);
 
-		$attributes = [
-			'title' => $this->faker()->sentence(4),
-			'description' => $this->faker()->sentence(4),
-			'notes' => 'general notes here.'
-		];
-
-		$response = $this->post('/projects', $attributes);
-
-		$project = Project::where($attributes)->first();
-
-		$response->assertRedirect($project->path());
-
-		$this->get($project->path())
+		$this->followingRedirects()
+			->post('/projects', $attributes = Project::factory()->raw())
 			->assertSee($attributes['title'])
 			->assertSee($attributes['description'])
 			->assertSee($attributes['notes']);
@@ -129,12 +118,19 @@ class ManageProjectsTest extends TestCase
 
 	public function test_an_authenticated_user_cannot_delete_the_projects_of_others()
 	{
-		$this->signIn();
-
 		$project = Project::factory()->create();
 
 		$this->delete($project->path())
+			->assertRedirect('/login');
+
+		$user = $this->signIn();
+
+		$this->delete($project->path())
 			->assertStatus(Response::HTTP_FORBIDDEN);
+
+		$project->invite($user);
+
+		$this->actingAs($user)->delete($project->path())->assertStatus(Response::HTTP_FORBIDDEN);
 	}
 
 	public function test_a_user_can_see_all_the_projects_they_have_been_invited_to_on_their_dashboard()

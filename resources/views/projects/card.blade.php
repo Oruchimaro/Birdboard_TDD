@@ -9,7 +9,9 @@
 			@method('DELETE')
 			@csrf
 
-			<button class="button delete mt-3" type="submit">Delete</button>
+			@can ('manage', $project)
+				<button class="button delete mt-3" type="submit">Delete</button>
+			@endcan
 		</form>
 	</footer>
 </div>
