@@ -17,9 +17,7 @@ use App\Http\Controllers\ProjectsInvitationsController;
 |
 */
 
-Route::get('/', function () {
-    return redirect()->route('projects.index')
-});
+Route::redirect('/', '/projects', 301);
 
 Auth::routes();
 
