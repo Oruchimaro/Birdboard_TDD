@@ -20,7 +20,7 @@
 	<link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 
-<body class="bg-cgrey-100">
+<body class="theme-light bg-cgrey-100">
 	<div id="app">
 		<nav class="bg-white">
 			<div class="container mx-auto">
@@ -47,6 +47,7 @@
 								@endif
 							@else
 								<theme-switcher></theme-switcher>
+
 								<a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
 									{{ Auth::user()->name }}
 								</a>
