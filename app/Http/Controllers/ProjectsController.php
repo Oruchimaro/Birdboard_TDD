@@ -36,13 +36,18 @@ class ProjectsController extends Controller
 
 
 
-    public function store()
+    public function store() : mixed
     {
         $project = auth()->user()->projects()->create(request()->validate([
 			'title' => 'sometimes|required',
             'description' => 'sometimes|required',
 			'notes' => 'nullable'
 		]));
+
+		if(request()->wantsJson())
+		{
+			return ['message' => $project->path()];
+		}
 
         return redirect($project->path());
     }
