@@ -44,6 +44,11 @@ class ProjectsController extends Controller
 			'notes' => 'nullable'
 		]));
 
+		if($tasks = request('tasks'))
+		{
+			$project->addManyTasks($tasks);
+		}
+
 		if(request()->wantsJson())
 		{
 			return ['message' => $project->path()];

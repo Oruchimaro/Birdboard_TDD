@@ -45,17 +45,17 @@
               placeholder="Task 1"
               v-for="task in form.tasks"
               v-bind:key="task.id"
-              v-model="task.value"
+              v-model="task.body"
             />
           </div>
 
-          <button class="mr-2 text-xs text-green-500" @click="addTask">+ Add New Task Field...</button>
+          <button type="button" class="mr-2 text-xs text-green-500" @click="addTask">+ Add New Task Field...</button>
         </div>
       </div>
 
       <footer class="flex justify-end">
         <button class="mr-4 text-xs text-blue-500">Create Project</button>
-        <button class="text-xs text-red-400" @click="$modal.hide('create-project')">Cancel</button>
+        <button type="button" class="text-xs text-red-400" @click="$modal.hide('create-project')">Cancel</button>
       </footer>
     </form>
   </modal>
@@ -71,7 +71,7 @@ export default {
         title: '',
         description: '',
         tasks: [
-          { value: '' }
+          { body: '' }
         ]
       },
 

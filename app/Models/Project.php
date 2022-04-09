@@ -51,6 +51,18 @@ class Project extends Model
 		return $this->hasMany(Task::class);
 	}
 
+	/**
+	 * * Add an array op tasks to this projects using createMany method
+	 *
+	 * @param array $tasks
+	 * @return \Illuminate\Database\Eloquent\Collection
+	 */
+	public function addManyTasks($tasks)
+	{
+		return $this->tasks()->createMany($tasks);
+	}
+
+
 
 	public function addTask($body) : Task
 	{

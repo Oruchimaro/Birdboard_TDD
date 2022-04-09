@@ -5472,7 +5472,7 @@ __webpack_require__.r(__webpack_exports__);
         title: '',
         description: '',
         tasks: [{
-          value: ''
+          body: ''
         }]
       },
       errors: {}
@@ -28497,8 +28497,8 @@ var render = function () {
                         {
                           name: "model",
                           rawName: "v-model",
-                          value: task.value,
-                          expression: "task.value",
+                          value: task.body,
+                          expression: "task.body",
                         },
                       ],
                       key: task.id,
@@ -28509,13 +28509,13 @@ var render = function () {
                         id: "title",
                         placeholder: "Task 1",
                       },
-                      domProps: { value: task.value },
+                      domProps: { value: task.body },
                       on: {
                         input: function ($event) {
                           if ($event.target.composing) {
                             return
                           }
-                          _vm.$set(task, "value", $event.target.value)
+                          _vm.$set(task, "body", $event.target.value)
                         },
                       },
                     })
@@ -28528,6 +28528,7 @@ var render = function () {
                 "button",
                 {
                   staticClass: "mr-2 text-xs text-green-500",
+                  attrs: { type: "button" },
                   on: { click: _vm.addTask },
                 },
                 [_vm._v("+ Add New Task Field...")]
@@ -28544,6 +28545,7 @@ var render = function () {
               "button",
               {
                 staticClass: "text-xs text-red-400",
+                attrs: { type: "button" },
                 on: {
                   click: function ($event) {
                     return _vm.$modal.hide("create-project")
