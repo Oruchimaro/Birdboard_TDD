@@ -5,6 +5,7 @@
 
       <div class="flex">
         <div class="flex-1 mr-4">
+
           <div class="mb-4">
             <label for="title" class="mb-2 text-sm block">Title</label>
             <input
@@ -12,27 +13,33 @@
               type="text"
               id="title"
               class="border p-2 text-ms block w-full"
-              :class="errors.title ? 'border-red-700' : 'border-muted-light'"
+              :class="form.errors.title ? 'border-red-700' : 'border-muted-light'"
               v-model="form.title"
             />
-            <span class="text-xs italic text-red-400" v-if="errors.title" v-text="errors.title[0]"></span>
+            <span
+                class="text-xs italic text-red-400"
+                v-if="form.errors.title"
+                v-text="form.errors.title[0]"
+            ></span>
           </div>
+
           <div class="mb-4">
             <label for="description" class="mb-2 text-sm block">Description</label>
             <textarea
               for="description"
               id="description"
               class="border p-2 text-ms block w-full"
-              :class="errors.description ? 'border-red-700' : 'border-muted-light'"
+              :class="form.errors.description ? 'border-red-700' : 'border-muted-light'"
               rows="7"
               v-model="form.description"
             ></textarea>
             <span
               class="text-xs italic text-red-400"
-              v-if="errors.description"
-              v-text="errors.description[0]"
+              v-if="form.errors.description"
+              v-text="form.errors.description[0]"
             ></span>
           </div>
+
         </div>
 
         <div class="flex-1 ml-4">
@@ -51,46 +58,48 @@
 
           <button type="button" class="mr-2 text-xs text-green-500" @click="addTask">+ Add New Task Field...</button>
         </div>
+
       </div>
 
       <footer class="flex justify-end">
         <button class="mr-4 text-xs text-blue-500">Create Project</button>
         <button type="button" class="text-xs text-red-400" @click="$modal.hide('create-project')">Cancel</button>
       </footer>
+
     </form>
   </modal>
 </template>
 
 <script>
-import axios from "axios";
+import BirdboardForm from './BirdboardForm';
 
 export default {
   data() {
     return {
-      form: {
+      form: new BirdboardForm ({
         title: '',
         description: '',
         tasks: [
           { body: '' }
         ]
-      },
-
-      errors: {}
+      })
     };
   },
 
   methods: {
     addTask() {
-      this.form.tasks.push({ value: '' });
+      this.form.tasks.push({ body: '' });
     },
 
     submit() {
-      axios.post('/projects', this.form)
-        .then(res => {
-          location = res.data.message;
-        }).catch(err => {
-          this.errors = err.response.data.errors;
-        })
+        // don't send the tasks to server if empty
+        if (! this.form.tasks[0].body)
+        {
+            delete this.form.originalData.tasks;
+        }
+
+        this.form.submit('/projects')
+            .then(response => location = response.data.message)
     }
   }
 }
